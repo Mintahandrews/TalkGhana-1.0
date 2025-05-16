@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="16" fill="#075E54"/>
+  
+  <!-- Microphone icon -->
+  <path d="M16 8C14.3431 8 13 9.34315 13 11V17C13 18.6569 14.3431 20 16 20C17.6569 20 19 18.6569 19 17V11C19 9.34315 17.6569 8 16 8Z" fill="white"/>
+  <path d="M22 17C22 19.7614 19.7614 22 17 22H15C12.2386 22 10 19.7614 10 17H8C8 20.866 11.134 24 15 24H17C20.866 24 24 20.866 24 17H22Z" fill="white"/>
+  <path d="M16 24V28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg> 

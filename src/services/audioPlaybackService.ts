@@ -462,11 +462,44 @@ export class AudioPlayer {
    * Set volume
    */
   setVolume(volume: number): void {
-    this.options.volume = Math.max(0, Math.min(1, volume));
+    const normalizedVolume = Math.max(0, Math.min(1, volume));
+    this.options.volume = normalizedVolume;
 
     if (this.gainNode) {
-      this.gainNode.gain.value = this.options.volume;
+      this.gainNode.gain.value = normalizedVolume;
     }
+    if (this.audio) {
+      this.audio.volume = normalizedVolume;
+    }
+  }
+
+  /**
+   * Get current volume
+   */
+  getVolume(): number {
+    return this.options.volume || 1.0;
+  }
+
+  /**
+   * Set playback speed (0.25 to 2.5)
+   */
+  setSpeed(speed: number): void {
+    const normalizedSpeed = Math.max(0.25, Math.min(2.5, speed));
+    this.options.playbackRate = normalizedSpeed;
+
+    if (this.sourceNode) {
+      this.sourceNode.playbackRate.value = normalizedSpeed;
+    }
+    if (this.audio) {
+      this.audio.playbackRate = normalizedSpeed;
+    }
+  }
+
+  /**
+   * Get current playback speed
+   */
+  getSpeed(): number {
+    return this.options.playbackRate || 1.0;
   }
 
   /**

@@ -1,7 +1,16 @@
 import { useState, useRef, useEffect } from "react";
-import { Mic, Square, Loader2, AlertCircle } from "lucide-react";
+import {
+  Mic,
+  Square,
+  Loader2,
+  AlertCircle,
+  Volume2,
+  FastForward,
+} from "lucide-react";
 import { asrService } from "../services/asrService";
+import { AudioPlayer } from "../services/audioPlaybackService";
 import { toast } from "sonner";
+import { Slider } from "./ui/Slider";
 
 export type TranscriptionResult = {
   text: string;
@@ -24,13 +33,37 @@ const AudioRecorder = ({
   const [recordingTime, setRecordingTime] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [asrAvailable, setAsrAvailable] = useState(true);
+  const [volume, setVolume] = useState(1.0);
+  const [speed, setSpeed] = useState(1.0);
+  const [asrStatus, setAsrStatus] = useState<string>("idle");
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<number | null>(null);
+  const audioPlayerRef = useRef<AudioPlayer | null>(null);
 
-  // Check if ASR service is available
   useEffect(() => {
-    setAsrAvailable(asrService.isAvailable());
+    // Initialize audio player
+    audioPlayerRef.current = new AudioPlayer({
+      volume: volume,
+      playbackRate: speed,
+    });
+
+    return () => {
+      // Cleanup audio player
+      audioPlayerRef.current?.destroy();
+    };
+  }, []);
+
+  // Check ASR service status
+  useEffect(() => {
+    const checkStatus = () => {
+      setAsrAvailable(asrService.isAvailable());
+      setAsrStatus(asrService.getStatus());
+    };
+
+    checkStatus();
+    const interval = setInterval(checkStatus, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   // Manage recording timer
@@ -91,6 +124,11 @@ const AudioRecorder = ({
             throw new Error("No audio data recorded. Please try again.");
           }
 
+          // Load audio for playback
+          if (audioPlayerRef.current) {
+            await audioPlayerRef.current.loadAudio(audioBlob);
+          }
+
           // Transcribe the audio
           const text = await asrService.transcribeAudio(audioBlob);
 
@@ -143,6 +181,20 @@ const AudioRecorder = ({
       .padStart(2, "0")}`;
   };
 
+  const handleVolumeChange = (value: number) => {
+    setVolume(value);
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.setVolume(value);
+    }
+  };
+
+  const handleSpeedChange = (value: number) => {
+    setSpeed(value);
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.setSpeed(value);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center gap-4">
       {!asrAvailable && (
@@ -154,47 +206,68 @@ const AudioRecorder = ({
         </div>
       )}
 
-      <div className="relative">
-        <button
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={isTranscribing}
-          className={`p-4 rounded-full transition-all duration-300 ${
-            isRecording
-              ? "bg-red-500 hover:bg-red-600"
-              : "bg-[#075E54] hover:bg-[#064e45]"
-          } text-white shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed`}
-        >
-          {isTranscribing ? (
-            <Loader2 className="w-8 h-8 animate-spin" />
-          ) : isRecording ? (
-            <Square className="w-8 h-8" />
-          ) : (
-            <Mic className="w-8 h-8" />
+      <div className="flex flex-col items-center gap-6 w-full max-w-md">
+        {/* Recording controls */}
+        <div className="flex items-center justify-center gap-4">
+          <button
+            onClick={isRecording ? stopRecording : startRecording}
+            disabled={isTranscribing}
+            className={`p-4 rounded-full transition-colors ${
+              isRecording
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-blue-500 hover:bg-blue-600"
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {isRecording ? (
+              <Square className="w-6 h-6 text-white" />
+            ) : (
+              <Mic className="w-6 h-6 text-white" />
+            )}
+          </button>
+
+          {isRecording && (
+            <div className="text-lg font-mono">{formatTime(recordingTime)}</div>
           )}
-        </button>
-        {isRecording && (
-          <div className="absolute -inset-1 bg-red-500 rounded-full animate-ping opacity-75"></div>
-        )}
-      </div>
-
-      {error && (
-        <div className="text-red-500 text-sm mt-2 max-w-[300px] text-center">
-          {error}
         </div>
-      )}
 
-      <div className="text-gray-600 dark:text-gray-300 text-sm flex flex-col items-center">
-        <p>
-          {isRecording
-            ? `Recording... ${formatTime(recordingTime)}`
-            : isTranscribing
-            ? "Transcribing..."
-            : "Click to start recording"}
-        </p>
-        {isRecording && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Click again to stop
-          </p>
+        {/* Volume control */}
+        <div className="flex items-center gap-4 w-full">
+          <Volume2 className="w-5 h-5" />
+          <Slider
+            value={[volume]}
+            min={0}
+            max={1}
+            step={0.1}
+            onValueChange={([value]) => handleVolumeChange(value)}
+            className="flex-1"
+          />
+          <span className="w-12 text-right">{Math.round(volume * 100)}%</span>
+        </div>
+
+        {/* Speed control */}
+        <div className="flex items-center gap-4 w-full">
+          <FastForward className="w-5 h-5" />
+          <Slider
+            value={[speed]}
+            min={0.25}
+            max={2.5}
+            step={0.25}
+            onValueChange={([value]) => handleSpeedChange(value)}
+            className="flex-1"
+          />
+          <span className="w-12 text-right">{speed}x</span>
+        </div>
+
+        {/* Status indicator */}
+        {(isTranscribing || asrStatus === "transcribing") && (
+          <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span>Transcribing audio...</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-red-500 dark:text-red-400 text-sm">{error}</div>
         )}
       </div>
     </div>
