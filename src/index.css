@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark mode base styles */
+.dark body {
+  @apply bg-dark-bg-primary text-dark-text-primary;
+}
+
+/* Comprehensive text selectors for dark mode */
+.dark *:not(.text-white, .text-gray-100, .text-gray-200) {
+  @apply text-dark-text-primary;
+}
+
+/* Enhanced form elements for dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  @apply bg-dark-bg-secondary border-dark-border text-dark-text-primary;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  @apply text-dark-text-tertiary;
+}
+
+.dark button:not(.btn-primary, .btn-secondary, .btn-accent) {
+  @apply border-dark-border bg-dark-bg-secondary text-dark-text-primary;
+}
+
+/* Improved focus states for form elements */
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  @apply border-ghana-green-light ring-1 ring-ghana-green-light;
+}
+
+/* Enhanced code and pre elements */
+.dark pre,
+.dark code {
+  @apply bg-dark-bg-tertiary text-dark-text-secondary;
+}
+
+/* Table styles in dark mode */
+.dark table {
+  @apply border-dark-border;
+}
+
+.dark table th {
+  @apply bg-dark-bg-tertiary text-dark-text-primary border-dark-border;
+}
+
+.dark table td {
+  @apply border-dark-border text-dark-text-secondary;
+}
+
+.dark table tr:nth-child(even) {
+  @apply bg-dark-bg-secondary;
+}
+
+/* Audio player styling */
+.dark audio {
+  @apply bg-dark-bg-secondary;
+}
+
+/* Card and container elements */
+.dark .card,
+.dark .container,
+.dark .panel,
+.dark .box,
+.dark .modal,
+.dark .dialog,
+.dark .dropdown,
+.dark .menu {
+  @apply bg-dark-bg-secondary border-dark-border;
+}
+
+/* Specific background class overrides */
+.dark .bg-white {
+  @apply bg-dark-bg-secondary;
+}
+
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-gray-200 {
+  @apply bg-dark-bg-tertiary;
+}
+
+/* Text color overrides */
+.dark .text-gray-900 {
+  @apply text-dark-text-primary;
+}
+
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  @apply text-dark-text-secondary;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500 {
+  @apply text-dark-text-tertiary;
+}
+
+/* Border color overrides */
+.dark .border,
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  @apply border-dark-border;
+}
+
+/* Hover state improvements */
+.dark .hover\:bg-gray-100:hover {
+  @apply hover:bg-dark-bg-tertiary;
+}
+
+.dark .hover\:text-gray-900:hover {
+  @apply hover:text-dark-text-primary;
+}
+
+/* Form control styles */
+.dark input[type="range"] {
+  @apply bg-dark-bg-tertiary;
+}
+
+.dark input[type="range"]::-webkit-slider-thumb {
+  @apply bg-ghana-green-light;
+}
+
+.dark input[type="checkbox"],
+.dark input[type="radio"] {
+  @apply border-dark-border bg-dark-bg-tertiary text-ghana-green;
+}
+
+/* Root variables */
+:root {
+  --font-primary: "Inter", sans-serif;
+  --font-secondary: "DM Sans", sans-serif;
+
+  /* Ghana-inspired color palette */
+  --color-primary: #075e54; /* Green from flag */
+  --color-secondary: #128c7e;
+  --color-accent: #ce1126; /* Red from flag */
+  --color-gold: #fcd116; /* Yellow/Gold from flag */
+  --color-black: #000000; /* Black from flag */
+
+  /* Light theme */
+  --color-text: #1a202c;
+  --color-background: #f7fafc;
+}
+
+.dark {
+  --color-text: #f7fafc;
+  --color-background: #121212;
+  --color-background-secondary: #1e1e1e;
+  --color-background-tertiary: #2d2d2d;
+  --color-border: #3d3d3d;
+}
+
+.contrast-high {
+  --color-primary: #00a676;
+  --color-text: #000000;
+  --color-background: #ffffff;
+}
+
+.dark.contrast-high {
+  --color-primary: #10e3a4;
+  --color-text: #ffffff;
+  --color-background: #000000;
+  --color-background-secondary: #121212;
+  --color-background-tertiary: #1a1a1a;
+  --color-border: #ffffff;
+}
+
+body {
+  font-family: var(--font-primary);
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-secondary);
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-[#075E54] hover:bg-[#064e45] text-white;
+  }
+
+  .btn-secondary {
+    @apply bg-[#128C7E] hover:bg-[#107b6e] text-white;
+  }
+
+  .btn-accent {
+    @apply bg-[#25D366] hover:bg-[#20b356] text-white;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#075E54] focus:border-transparent dark:border-dark-border dark:bg-dark-bg-secondary dark:text-dark-text-primary dark:focus:ring-ghana-green-light;
+  }
+}

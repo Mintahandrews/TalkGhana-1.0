@@ -1,0 +1,59 @@
+/* index.css */
+
+/* TTS Page Styles */
+.tts-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: none;
+  border: none;
+}
+
+.tts-textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tts-button {
+  background-color: #4a56e2;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tts-button:hover {
+  background-color: #3a46c2;
+}
+
+.tts-button:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #e53935;
+  margin-bottom: 1rem;
+}
+
+/* Container styles */
+.container,
+.page-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  /* Removing box-shadow/border */
+  box-shadow: none;
+  border: none;
+}

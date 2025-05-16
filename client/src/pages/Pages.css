@@ -1,0 +1,7 @@
+/* Remove borders from page containers */
+.page-container,
+.content-container,
+.section-container {
+  border: none;
+  box-shadow: none;
+}

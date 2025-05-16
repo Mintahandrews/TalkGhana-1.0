@@ -1,0 +1,24 @@
+{
+  "version": "0.2",
+  "ignorePaths": ["node_modules/**", "package-lock.json"],
+  "words": [
+    "Akuapem",
+    "Amina",
+    "dagbani",
+    "ewe",
+    "finetuned",
+    "ghananlp",
+    "ghchatters",
+    "huggingface",
+    "HUGGINGFACE",
+    "Ibrahim",
+    "Kofi",
+    "Kwame",
+    "Kwami",
+    "neondatabase",
+    "sonner",
+    "sslmode",
+    "talkghana",
+    "VITE"
+  ]
+}
