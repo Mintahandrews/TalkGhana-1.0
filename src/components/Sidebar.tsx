@@ -3,8 +3,8 @@ import { useAuth } from "../contexts/AuthContext";
 import ThemeToggle from "./ThemeToggle";
 import {
   Bookmark,
-  CircleHelp,
-  House,
+  HelpCircle,
+  Home,
   LogOut,
   MessageSquare,
   Mic,
@@ -18,14 +18,14 @@ const Sidebar = () => {
   const location = useLocation();
 
   const navItems = [
-    { name: "Dashboard", path: "/dashboard", icon: <House size={20} /> },
+    { name: "Dashboard", path: "/dashboard", icon: <Home size={20} /> },
     { name: "Speech to Text", path: "/asr", icon: <Mic size={20} /> },
     { name: "Text to Speech", path: "/tts", icon: <Type size={20} /> },
     { name: "Phrase Bank", path: "/phrases", icon: <Bookmark size={20} /> },
     { name: "WhatsApp", path: "/whatsapp", icon: <MessageSquare size={20} /> },
     { name: "Settings", path: "/settings", icon: <Settings size={20} /> },
     { name: "Profile", path: "/profile", icon: <User size={20} /> },
-    { name: "Help", path: "/help", icon: <CircleHelp size={20} /> },
+    { name: "Help", path: "/help", icon: <HelpCircle size={20} /> },
   ];
 
   // Check if a nav item is active

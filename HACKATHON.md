@@ -1,4 +1,4 @@
-# 🇬🇭 TalkGhana - Tek Yerema Pa Hackathon 2025
+# 🇬🇭 TalkGhana - Tekyerema Pa hackathon 2025
 
 ## Team: DevForChange(DFC)
 

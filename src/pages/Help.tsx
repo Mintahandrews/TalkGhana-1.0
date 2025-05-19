@@ -1,4 +1,4 @@
-import { Book, FileText, CircleHelp, Lightbulb, MessageCircle, Play, Star, Youtube } from 'lucide-react';
+import { Book, FileText, HelpCircle, Lightbulb, MessageCircle, Play, Star, Youtube } from 'lucide-react';
 
 const Help = () => {
   // FAQ data
@@ -63,7 +63,7 @@ const Help = () => {
     <div className="max-w-5xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <CircleHelp className="text-[#075E54] dark:text-green-400" size={28} />
+          <HelpCircle className="text-[#075E54] dark:text-green-400" size={28} />
           Help & Support
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">

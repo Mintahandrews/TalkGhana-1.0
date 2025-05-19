@@ -5,7 +5,16 @@ TalkGhana is an AI-powered conversational platform designed for Ghanaian languag
 ## 🌟 Features
 
 - **Speech Recognition (ASR)**: Transcribe spoken Ghanaian languages to text
-- **Text-to-Speech (TTS)**: Convert text to natural-sounding speech in multiple Ghanaian languages
+  - Supports Twi, Ga, Ewe, Hausa, and Dagbani
+  - Real-time transcription
+  - High accuracy with native language models
+
+- **Text-to-Speech (TTS)**: Convert text to natural-sounding speech
+  - Supports multiple Ghanaian languages (Twi, Ewe, Hausa, Dagbani, Ga)
+  - Adjustable speech rate and volume
+  - Downloadable audio output
+  - Offline support after initial download
+
 - **WhatsApp Integration**: Share audio and text messages via WhatsApp
 - **Phrase Bank**: Store and organize frequently used phrases
 - **Dark/Light Mode**: User-friendly interface with theme preferences
@@ -13,15 +22,22 @@ TalkGhana is an AI-powered conversational platform designed for Ghanaian languag
 
 ## 🚀 Key Technologies
 
-- React.js & TypeScript
-- Tailwind CSS
-- Hugging Face AI models for Ghanaian languages
-- Custom API services for speech processing
+- **Frontend**: React.js & TypeScript
+- **Styling**: Tailwind CSS
+- **AI Models**:
+  - Hugging Face MMS (Massively Multilingual Speech) for TTS
+  - Custom fine-tuned models for Ghanaian languages
+- **Audio Processing**: Web Audio API
+- **State Management**: React Hooks & Context API
+- **Build Tool**: Vite
+- **Package Manager**: npm
 
 ## 📋 Prerequisites
 
-- Node.js (v16+)
-- npm or yarn
+- Node.js (v18+ recommended)
+- npm (v9+)
+- Modern web browser with Web Audio API support
+- Internet connection (required for initial model download)
 
 ## 💻 Installation
 

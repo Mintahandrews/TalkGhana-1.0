@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import { convertAudioFormat } from '../services/audioService';
+import { convertAudioFormat, AudioFormat } from '../services/audioService';
 
 /**
  * WhatsApp sharing utilities for TalkGhana
@@ -14,24 +14,38 @@ export interface ShareOptions {
   audioBlob?: Blob;
   fileName?: string;
   recipientPhone?: string;
+  fallback?: boolean;
 }
 
 /**
  * Share text message via WhatsApp
  */
-export const shareTextViaWhatsApp = (text: string, phone?: string): void => {
-  const encodedText = encodeURIComponent(text);
-  let whatsappUrl = 'https://wa.me/';
-  
-  if (phone) {
-    // Remove any non-numeric characters from phone number
-    const cleanPhone = phone.replace(/\D/g, '');
-    whatsappUrl += `${cleanPhone}?text=${encodedText}`;
-  } else {
-    whatsappUrl += `?text=${encodedText}`;
+export const shareTextViaWhatsApp = async (text: string, phone?: string, options: { fallback?: boolean } = {}): Promise<boolean> => {
+  try {
+    const whatsappUrl = phone 
+      ? `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`
+      : `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+    // Try Web Share API first if available
+    if ('share' in navigator && !options.fallback) {
+      try {
+        await navigator.share({
+          text: text,
+          url: whatsappUrl
+        });
+        return true;
+      } catch (e) {
+        console.log('Web Share API failed, falling back to URL');
+      }
+    }
+
+    // Fallback to opening WhatsApp URL
+    window.open(whatsappUrl, '_blank');
+    return true;
+  } catch (error) {
+    console.error('Error sharing to WhatsApp:', error);
+    return false;
   }
-  
-  window.open(whatsappUrl, '_blank');
 };
 
 /**
@@ -69,18 +83,17 @@ export const prepareAudioForWhatsApp = async (
   audioBlob: Blob,
   targetFormat: WhatsAppAudioFormat = 'ogg'
 ): Promise<Blob> => {
-  // Check if conversion is needed
-  const currentFormat = audioBlob.type.split('/')[1];
-  
-  if (currentFormat === targetFormat) {
-    return audioBlob;
-  }
-  
-  // Convert to WhatsApp compatible format
   try {
-    return await convertAudioFormat(audioBlob, targetFormat);
+    // Check if audio is already in a compatible format
+    const audioType = audioBlob.type.toLowerCase();
+    if (audioType === 'audio/ogg' || audioType === 'audio/mpeg') {
+      return audioBlob;
+    }
+
+    // Convert to WhatsApp compatible format using audio service
+    return await convertAudioFormat(audioBlob, targetFormat as AudioFormat);
   } catch (error) {
-    console.error('Error converting audio format:', error);
+    console.error('Error preparing audio for WhatsApp:', error);
     throw new Error('Failed to convert audio to WhatsApp compatible format');
   }
 };
@@ -98,39 +111,39 @@ export const downloadAudio = (
 
 /**
  * Share audio via WhatsApp (combined approach)
- * First tries Web Share API, falls back to download + deeplink
+ * 
+ * First tries Web Share API, falls back to download + deep link
  */
 export const shareAudioViaWhatsApp = async (
   audioBlob: Blob,
-  options: ShareOptions = {}
+  fileName: string,
+  options: {
+    text?: string;
+    recipientPhone?: string;
+    fallback?: boolean;
+  } = {}
 ): Promise<boolean> => {
   try {
     // Prepare audio in WhatsApp-compatible format
     const whatsappAudio = await prepareAudioForWhatsApp(audioBlob);
-    
-    // Try Web Share API first if no specific recipient
-    if (!options.recipientPhone) {
-      const fileName = options.fileName || `talkghana-audio-${Date.now()}.ogg`;
-      const webShareResult = await shareAudioViaWebShare(whatsappAudio, fileName, options.text);
-      
-      if (webShareResult) {
-        return true;
+
+    // Try Web Share API first if available
+    if ('share' in navigator && !options.fallback) {
+      try {
+        const webShareResult = await shareAudioViaWebShare(whatsappAudio, fileName, options.text);
+        if (webShareResult) return true;
+      } catch (e) {
+        console.log('Web Share API failed, falling back to download');
       }
     }
-    
-    // Fall back to download + deeplink approach
-    const fileName = options.fileName || `talkghana-audio-${Date.now()}.ogg`;
-    downloadAudio(whatsappAudio, fileName.split('.')[0]);
-    
-    // After download, open WhatsApp with text message
-    if (options.text) {
-      const downloadMessage = "I've sent you an audio message from TalkGhana. Check your downloads folder.";
-      const fullMessage = options.text + "\n\n" + downloadMessage;
-      shareTextViaWhatsApp(fullMessage, options.recipientPhone);
-    } else {
-      shareTextViaWhatsApp("I've sent you an audio message from TalkGhana. Check your downloads folder.", options.recipientPhone);
-    }
-    
+
+    // Download audio file
+    downloadAudio(whatsappAudio, fileName);
+
+    // Open WhatsApp with text message
+    const fullMessage = options.text || `I've sent you an audio message from TalkGhana. Check your downloads folder.`;
+    await shareTextViaWhatsApp(fullMessage, options.recipientPhone, { fallback: true });
+
     return true;
   } catch (error) {
     console.error('Error sharing audio via WhatsApp:', error);
