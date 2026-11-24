@@ -102,3 +102,7 @@ We are a team of developers passionate about creating technology solutions that 
 ## 📜 License
 
 MIT
+
+---
+
+Maintained by [Andrews Mintah](https://codemintah.dev)
